@@ -11,10 +11,10 @@ type ProductsResponse = {
 
 const endpoint = 'https://dummyjson.com/products/search';
 
-const route = useRoute();
-const query = computed(() => route.query);
+// const route = useRoute();
+// const query = computed(() => route.query);
 
-const { data, error, status } = useFetch<ProductsResponse>(endpoint, { query });
+const { data, error, pending } = useGet<ProductsResponse>(endpoint);
 </script>
 
 <template>
@@ -23,7 +23,7 @@ const { data, error, status } = useFetch<ProductsResponse>(endpoint, { query });
 
 		<ProductSearch />
 
-		<section v-if="status === 'success'" class="grid">
+		<section v-if="data" class="grid">
 			<article v-for="product in data?.products" :key="product.id">
 				<NuxtLink :to="`/product/${product.id}`">
 					<h3>{{ product.title }}</h3>
@@ -32,9 +32,9 @@ const { data, error, status } = useFetch<ProductsResponse>(endpoint, { query });
 			</article>
 		</section>
 
-		<pre v-if="status === 'success'">{{ data?.products }}</pre>
-		<pre v-if="status === 'error'">{{ error }}</pre>
-		<p v-if="status === 'pending'">Loading...</p>
+		<pre v-if="data">{{ data?.products }}</pre>
+		<pre v-if="error">{{ error }}</pre>
+		<p v-if="pending">Loading...</p>
 	</div>
 </template>
 
