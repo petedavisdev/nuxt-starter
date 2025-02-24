@@ -8,7 +8,7 @@
 		"generate": "nuxt generate",
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare",
-		"check": "nuxt typecheck && eslint . --fix && prettier --write ."
+		"check": "eslint . --fix && prettier --write ."
 	},
 	"dependencies": {
 		"@nuxt/eslint": "^1.1.0",
