@@ -1,20 +1,28 @@
 <script setup lang="ts">
-type Product = {
-	id: number;
-	title: string;
-	thumbnail: string;
-};
+import { z } from 'zod';
 
-type ProductsResponse = {
-	products: Product[];
-};
+const productSchema = z.object({
+	id: z.number(),
+	title: z.string(),
+	thumbnail: z.string(),
+});
+
+const productsResponseSchema = z.object({
+	products: z.array(productSchema),
+});
 
 const endpoint = 'https://dummyjson.com/products/search';
 
 const route = useRoute();
 const query = computed(() => route.query);
 
-const { data, error, status } = useFetch<ProductsResponse>(endpoint, { query });
+const { data, error, status } = useFetch(endpoint, { query });
+
+const validData = computed(() => {
+	const validation = productsResponseSchema.safeParse(data.value);
+	console.log(validation.data.products[0]);
+	return validation.success ? validation.data : null;
+});
 </script>
 
 <template>
@@ -24,7 +32,7 @@ const { data, error, status } = useFetch<ProductsResponse>(endpoint, { query });
 		<ProductSearch />
 
 		<section v-if="status === 'success'" class="grid">
-			<article v-for="product in data?.products" :key="product.id">
+			<article v-for="product in validData?.products" :key="product.id">
 				<NuxtLink :to="`/product/${product.id}`">
 					<h3>{{ product.title }}</h3>
 					<img :src="product.thumbnail" :alt="product.title" />
