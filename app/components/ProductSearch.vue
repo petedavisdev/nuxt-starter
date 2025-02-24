@@ -8,9 +8,10 @@ watchEffect(() => {
 
 const router = useRouter();
 
-watchEffect(() => {
-	router.push({ query: { q: q.value } });
-});
+watch(
+	q,
+	debounce(() => router.push({ query: { q: q.value } }))
+);
 </script>
 
 <template>
